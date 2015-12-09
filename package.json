@@ -10,5 +10,8 @@
   "repository": "kemitchell/plaintemplate.js",
   "scripts": {
     "test": "tape test.js"
+  },
+  "dependencies": {
+    "merge": "^1.2.0"
   }
 }

@@ -1,6 +1,7 @@
 module.exports = plaintemplate
 
 var parse = require('plaintemplate-parse')
+var merge = require('merge')
 
 function plaintemplate(input, values, tagHandler, parserOptions) {
   if (values === undefined) {
@@ -34,6 +35,21 @@ function defaultTagHandler(token, values, stringify) {
     key = tag.substring(7)
     if (!values.hasOwnProperty(key) || !values[key]) {
       return stringify(token.content, values, defaultTagHandler) }
+    else {
+      return '' } }
+  else if (startsWith('each ', tag)) {
+    key = tag.substring(5)
+    if (values.hasOwnProperty(key) && Array.isArray(values[key])) {
+      var elements = values[key]
+      var length = elements.length
+      return elements.reduce(
+        function(output, element, index) {
+          var inContext = {
+            element: element,
+            last: ( index === ( length - 1 ) ) }
+          var context = merge(true, values, inContext)
+          return output + stringify(token.content, context, defaultTagHandler) },
+        '') }
     else {
       return '' } } }
 

@@ -47,4 +47,13 @@ tape(function(test) {
         end: 'end' }),
     'Price: $100')
 
+  test.deepEqual(
+    plaintemplate(
+      ( '<% each people { %>' +
+          '<% insert element %>' +
+          '<% unless last { %>, <% } %>' +
+        '<% } %>' ),
+      { people: [ 'John', 'Paul', 'George', 'Ringo' ] }),
+    'John, Paul, George, Ringo')
+
   test.end() })

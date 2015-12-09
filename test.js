@@ -14,7 +14,7 @@ tape(function(test) {
 
   test.throws(
     function() { plaintemplate('Hello, <% insert name %>!') },
-    /Cannot insert name at line 1, column 8/)
+    /No variable "name" at line 1, column 8/)
 
   test.deepEqual(
     plaintemplate(
@@ -34,11 +34,19 @@ tape(function(test) {
       { onsale: true, price: '100' }),
     'Price: $100')
 
+  test.throws(
+    function() { plaintemplate('<% if onsale { %>x<% } %>') },
+    /No variable "onsale" at line 1, column 1/)
+
   test.deepEqual(
     plaintemplate(
       '<% unless onsale { %>Price: $<% insert price %><% } %>',
       { onsale: true, price: '100' }),
     '')
+
+  test.throws(
+    function() { plaintemplate('<% unless onsale { %>x<% } %>') },
+    /No variable "onsale" at line 1, column 1/)
 
   test.deepEqual(
     plaintemplate(
@@ -62,5 +70,20 @@ tape(function(test) {
         '<% } %>' ),
       { people: [ 'John', 'Paul', 'George', 'Ringo' ] }),
     'John, Paul, George, and Ringo')
+
+  test.throws(
+    function() { plaintemplate('<% each items { %>x<% } %>') },
+    /No variable "items" at line 1, column 1/)
+
+  test.throws(
+    function() {
+      plaintemplate(
+        '<% each items { %>x<% } %>',
+        { items: false } ) },
+    /Variable "items" is not an Array at line 1, column 1/)
+
+  test.throws(
+    function() { plaintemplate('<% blah %>') },
+    /Unknown directive "blah" at line 1, column 1/)
 
   test.end() })

@@ -3,52 +3,52 @@ module.exports = plaintemplate
 var parse = require('plaintemplate-parse')
 var merge = require('merge')
 
-function plaintemplate(input, values, tagHandler, parserOptions) {
-  if (values === undefined) {
-    values = { } }
+function plaintemplate(input, context, tagHandler, parserOptions) {
+  if (context === undefined) {
+    context = { } }
   if (tagHandler === undefined) {
     tagHandler = defaultTagHandler }
-  return stringify(parse(input, parserOptions), values, tagHandler) }
+  return stringify(parse(input, parserOptions), context, tagHandler) }
 
-function stringify(tokens, values, tagHandler) {
+function stringify(tokens, context, tagHandler) {
   return tokens.reduce(
     function(output, token) {
       if ('text' in token) {
         return output + token.text }
       else /* tag */ {
-        return output + tagHandler(token, values, stringify) } },
+        return output + tagHandler(token, context, stringify) } },
     '') }
 
-function defaultTagHandler(token, values, stringify) {
+function defaultTagHandler(token, context, stringify) {
   var tag, key
   tag = token.tag
   if (startsWith('insert ', tag)) {
     key = tag.substring(7)
-    return ( values.hasOwnProperty(key) ? values[key] : '' ) }
+    return ( context.hasOwnProperty(key) ? context[key] : '' ) }
   else if (startsWith('if ', tag)) {
     key = tag.substring(3)
-    if (values.hasOwnProperty(key) && !!values[key]) {
-      return stringify(token.content, values, defaultTagHandler) }
+    if (context.hasOwnProperty(key) && !!context[key]) {
+      return stringify(token.content, context, defaultTagHandler) }
     else {
       return '' } }
   else if (startsWith('unless ', tag)) {
     key = tag.substring(7)
-    if (!values.hasOwnProperty(key) || !values[key]) {
-      return stringify(token.content, values, defaultTagHandler) }
+    if (!context.hasOwnProperty(key) || !context[key]) {
+      return stringify(token.content, context, defaultTagHandler) }
     else {
       return '' } }
   else if (startsWith('each ', tag)) {
     key = tag.substring(5)
-    if (values.hasOwnProperty(key) && Array.isArray(values[key])) {
-      var elements = values[key]
+    if (context.hasOwnProperty(key) && Array.isArray(context[key])) {
+      var elements = context[key]
       var length = elements.length
       return elements.reduce(
         function(output, element, index) {
-          var inContext = {
+          var inSubcontext = {
             element: element,
             last: ( index === ( length - 1 ) ) }
-          var context = merge(true, values, inContext)
-          return output + stringify(token.content, context, defaultTagHandler) },
+          var subContext = merge(true, context, inSubcontext)
+          return output + stringify(token.content, subContext, defaultTagHandler) },
         '') }
     else {
       return '' } } }

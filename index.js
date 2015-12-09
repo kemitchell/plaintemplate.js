@@ -21,10 +21,19 @@ function stringify(tokens, context, tagHandler) {
     '') }
 
 function defaultTagHandler(token, context, stringify) {
-  var key, elements, length
+  var key, elements, length, error
   var tag = token.tag
   if (startsWith('insert ', tag)) {
     key = tag.substring(7)
+    if (context.hasOwnProperty(key)) {
+      return context[key] }
+    else {
+      error = new Error(
+        'Cannot ' + tag + ' at ' +
+        'line ' + token.position.line + ', ' +
+        'column ' + token.position.column)
+      error.position = token.position
+      throw error }
     return ( context.hasOwnProperty(key) ? context[key] : '' ) }
   else if (startsWith('if ', tag)) {
     key = tag.substring(3)

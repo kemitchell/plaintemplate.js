@@ -12,6 +12,10 @@ tape(function(test) {
       { name: 'John' }),
     'Hello, John!')
 
+  test.throws(
+    function() { plaintemplate('Hello, <% insert name %>!') },
+    /Cannot insert name at line 1, column 8/)
+
   test.deepEqual(
     plaintemplate(
       'Hello, <% insert first %> <%insert last%>.',

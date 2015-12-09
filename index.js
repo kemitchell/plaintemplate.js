@@ -37,8 +37,7 @@ function defaultTagHandler(token, context, stringify) {
     if (context.hasOwnProperty(key)) {
       return context[key] }
     else {
-      throw addPosition(new Error(), ( 'No variable "' + key + '"' )) }
-    return ( context.hasOwnProperty(key) ? context[key] : '' ) }
+      throw addPosition(new Error(), ( 'No variable "' + key + '"' )) } }
   else if (startsWith('if ', tag)) {
     key = tag.substring(3)
     if (context.hasOwnProperty(key)) {

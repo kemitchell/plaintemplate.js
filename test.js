@@ -86,4 +86,12 @@ tape(function(test) {
     function() { plaintemplate('<% blah %>') },
     /Unknown directive "blah" at line 1, column 1/)
 
+  test.deepEqual(
+    plaintemplate(
+      '<% super %> <% duper %>',
+      { happy: 'Happy!' },
+      function(token, context) {
+        return context.happy }),
+    'Happy! Happy!')
+
   test.end() })

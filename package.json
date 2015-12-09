@@ -1,7 +1,7 @@
 {
   "name": "plaintemplate",
   "description": "simplistic plain text templatng",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Kyle E. Mitchell <kyle@kemitchell.com> (https://kemitchell.com/)",
   "dependencies": {
     "merge": "^1.2.0",

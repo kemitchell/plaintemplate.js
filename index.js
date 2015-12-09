@@ -44,14 +44,21 @@ function defaultTagHandler(token, context, stringify) {
       var length = elements.length
       return elements.reduce(
         function(output, element, index) {
+          var odd = isOdd(index + 1)
           var inSubcontext = {
             element: element,
+            odd: odd,
+            event: !odd,
+            first: ( index === 0 ),
             last: ( index === ( length - 1 ) ) }
           var subContext = merge(true, context, inSubcontext)
           return output + stringify(token.content, subContext, defaultTagHandler) },
         '') }
     else {
       return '' } } }
+
+function isOdd(number) {
+  return ( ( number % 2) === 1 ) }
 
 function startsWith(prefix, string) {
   return ( string.indexOf(prefix) === 0 ) }

@@ -50,10 +50,13 @@ tape(function(test) {
   test.deepEqual(
     plaintemplate(
       ( '<% each people { %>' +
+          '<% unless first { %>' +
+            '<% if last { %>, and <% } %>' +
+            '<% unless last { %>, <% } %>' +
+          '<% } %>' +
           '<% insert element %>' +
-          '<% unless last { %>, <% } %>' +
         '<% } %>' ),
       { people: [ 'John', 'Paul', 'George', 'Ringo' ] }),
-    'John, Paul, George, Ringo')
+    'John, Paul, George, and Ringo')
 
   test.end() })

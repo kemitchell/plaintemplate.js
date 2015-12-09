@@ -67,7 +67,7 @@ function defaultTagHandler(token, context, stringify) {
             var inSubcontext = {
               element: element,
               odd: odd,
-              event: !odd,
+              even: !odd,
               first: ( index === 0 ),
               last: ( index === ( length - 1 ) ) }
             var subcontext = merge(true, context, inSubcontext)

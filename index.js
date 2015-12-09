@@ -9,16 +9,16 @@ function plaintemplate(input, values, tagHandler, parserOptions) {
     tagHandler = defaultTagHandler }
   return stringify(parse(input, parserOptions), values, tagHandler) }
 
-function stringify(tokens, values, stringForTag) {
+function stringify(tokens, values, tagHandler) {
   return tokens.reduce(
     function(output, token) {
       if ('text' in token) {
         return output + token.text }
       else /* tag */ {
-        return output + stringForTag(token, values) } },
+        return output + tagHandler(token, values, stringify) } },
     '') }
 
-function defaultTagHandler(token, values) {
+function defaultTagHandler(token, values, stringify) {
   var tag, key
   tag = token.tag
   if (startsWith('insert ', tag)) {

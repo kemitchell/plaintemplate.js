@@ -21,19 +21,23 @@ function stringify(tokens, context, tagHandler) {
     '') }
 
 function defaultTagHandler(token, context, stringify) {
-  var key, elements, length, error
+  var key, elements, length
   var tag = token.tag
+
+  function addPosition(error, message) {
+    error.message = (
+      message + ' at ' +
+      'line ' + token.position.line + ', ' +
+      'column ' + token.position.column)
+    error.position = token.position
+    return error }
+
   if (startsWith('insert ', tag)) {
     key = tag.substring(7)
     if (context.hasOwnProperty(key)) {
       return context[key] }
     else {
-      error = new Error(
-        'No variable "' + key + '" at ' +
-        'line ' + token.position.line + ', ' +
-        'column ' + token.position.column)
-      error.position = token.position
-      throw error }
+      throw addPosition(new Error(), ( 'No variable "' + key + '"' )) }
     return ( context.hasOwnProperty(key) ? context[key] : '' ) }
   else if (startsWith('if ', tag)) {
     key = tag.substring(3)
@@ -42,12 +46,7 @@ function defaultTagHandler(token, context, stringify) {
         !context[key] ?
           '' : stringify(token.content, context, defaultTagHandler) ) }
     else {
-      error = new Error(
-        'No variable "' + key + '" at ' +
-        'line ' + token.position.line + ', ' +
-        'column ' + token.position.column)
-      error.position = token.position
-      throw error } }
+      throw addPosition(new Error(), ( 'No variable "' + key + '"' )) } }
   else if (startsWith('unless ', tag)) {
     key = tag.substring(7)
     if (context.hasOwnProperty(key)) {
@@ -55,12 +54,7 @@ function defaultTagHandler(token, context, stringify) {
         !context[key] ?
           stringify(token.content, context, defaultTagHandler) : '' ) }
     else {
-      error = new Error(
-        'No variable "' + key + '" at ' +
-        'line ' + token.position.line + ', ' +
-        'column ' + token.position.column)
-      error.position = token.position
-      throw error } }
+      throw addPosition(new Error(), ( 'No variable "' + key + '"' )) } }
   else if (startsWith('each ', tag)) {
     key = tag.substring(5)
     if (context.hasOwnProperty(key)) {
@@ -82,26 +76,13 @@ function defaultTagHandler(token, context, stringify) {
               stringify(token.content, subcontext, defaultTagHandler) ) },
           '') }
       else {
-        error = new Error(
-          'Variable "' + key + '" is not an Array at ' +
-          'line ' + token.position.line + ', ' +
-          'column ' + token.position.column)
-        error.position = token.position
-        throw error } }
+        throw addPosition(
+          new Error(),
+          ( 'Variable "' + key + '" is not an Array')) } }
     else {
-      error = new Error(
-        'No variable "' + key + '" at ' +
-        'line ' + token.position.line + ', ' +
-        'column ' + token.position.column)
-      error.position = token.position
-      throw error } }
+      throw addPosition(new Error(), ( 'No variable "' + key + '"' )) } }
   else {
-    error = new Error(
-      'Unknown directive "' + tag + '" at ' +
-      'line ' + token.position.line + ', ' +
-      'column ' + token.position.column)
-    error.position = token.position
-    throw error } }
+    throw addPosition(new Error(), ( 'Unknown directive "' + tag + '"')) } }
 
 function isOdd(number) {
   return ( ( number % 2) === 1 ) }

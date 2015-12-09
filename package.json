@@ -1,0 +1,14 @@
+{
+  "name": "plaintemplate",
+  "description": "simplistic plain text templatng",
+  "version": "0.0.0",
+  "author": "Kyle E. Mitchell <kyle@kemitchell.com> (https://kemitchell.com/)",
+  "devDependencies": {
+    "tape": "^4.2.2"
+  },
+  "license": "MIT",
+  "repository": "kemitchell/plaintemplate.js",
+  "scripts": {
+    "test": "tape test.js"
+  }
+}

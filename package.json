@@ -3,6 +3,9 @@
   "description": "simplistic plain text templatng",
   "version": "0.0.0",
   "author": "Kyle E. Mitchell <kyle@kemitchell.com> (https://kemitchell.com/)",
+  "dependencies": {
+    "merge": "^1.2.0"
+  },
   "devDependencies": {
     "istanbul": "^0.4.1",
     "tape": "^4.2.2"
@@ -12,8 +15,5 @@
   "scripts": {
     "pretest": "istanbul cover test.js",
     "test": "istanbul check-coverage --statements 100 --functions 100 --branches 100 --lines 100"
-  },
-  "dependencies": {
-    "merge": "^1.2.0"
   }
 }

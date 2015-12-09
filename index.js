@@ -13,30 +13,27 @@ function plaintemplate(input, context, tagHandler, parserOptions) {
 function stringify(tokens, context, tagHandler) {
   return tokens.reduce(
     function(output, token) {
-      if ('text' in token) {
-        return output + token.text }
-      else /* tag */ {
-        return output + tagHandler(token, context, stringify) } },
+      return (
+        output +
+        ( ( 'text' in token ) ?
+          token.text :
+          tagHandler(token, context, stringify) ) ) },
     '') }
 
 function defaultTagHandler(token, context, stringify) {
-  var tag, key, elements, length
-  tag = token.tag
+  var key, elements, length
+  var tag = token.tag
   if (startsWith('insert ', tag)) {
     key = tag.substring(7)
     return ( context.hasOwnProperty(key) ? context[key] : '' ) }
   else if (startsWith('if ', tag)) {
     key = tag.substring(3)
-    if (context.hasOwnProperty(key) && !!context[key]) {
-      return stringify(token.content, context, defaultTagHandler) }
-    else {
-      return '' } }
+    return ( ( context.hasOwnProperty(key) && !!context[key] ) ?
+      stringify(token.content, context, defaultTagHandler) : '' ) }
   else if (startsWith('unless ', tag)) {
     key = tag.substring(7)
-    if (!context.hasOwnProperty(key) || !context[key]) {
-      return stringify(token.content, context, defaultTagHandler) }
-    else {
-      return '' } }
+    return ( ( !context.hasOwnProperty(key) || !context[key] ) ?
+      stringify(token.content, context, defaultTagHandler) : '' ) }
   else if (startsWith('each ', tag)) {
     key = tag.substring(5)
     if (context.hasOwnProperty(key) && Array.isArray(context[key])) {
@@ -51,8 +48,10 @@ function defaultTagHandler(token, context, stringify) {
             event: !odd,
             first: ( index === 0 ),
             last: ( index === ( length - 1 ) ) }
-          var subContext = merge(true, context, inSubcontext)
-          return output + stringify(token.content, subContext, defaultTagHandler) },
+          var subcontext = merge(true, context, inSubcontext)
+          return (
+            output +
+            stringify(token.content, subcontext, defaultTagHandler) ) },
         '') }
     else {
       return '' } } }

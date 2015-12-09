@@ -20,7 +20,7 @@ function stringify(tokens, context, tagHandler) {
     '') }
 
 function defaultTagHandler(token, context, stringify) {
-  var tag, key
+  var tag, key, elements, length
   tag = token.tag
   if (startsWith('insert ', tag)) {
     key = tag.substring(7)
@@ -40,8 +40,8 @@ function defaultTagHandler(token, context, stringify) {
   else if (startsWith('each ', tag)) {
     key = tag.substring(5)
     if (context.hasOwnProperty(key) && Array.isArray(context[key])) {
-      var elements = context[key]
-      var length = elements.length
+      elements = context[key]
+      length = elements.length
       return elements.reduce(
         function(output, element, index) {
           var odd = isOdd(index + 1)

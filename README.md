@@ -1,3 +1,5 @@
+Roll your own Mustache-like plaintext template language with custom syntax and template directives.
+
 ```javascript
 var plaintemplate = require('plaintemplate')
 var assert = require('assert')

@@ -1,5 +1,5 @@
 ```javascript
-var plaintemplate = require('./')
+var plaintemplate = require('plaintemplate')
 var assert = require('assert')
 
 assert.deepEqual(

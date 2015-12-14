@@ -3,28 +3,28 @@ var plaintemplate = require('plaintemplate')
 var assert = require('assert')
 
 assert.deepEqual(
-plaintemplate(
-  // Template input
-  '(( five { ))Howdy, (( = name ))! (( } ))',
-  // Context
-  { name: 'John' },
-  // Template directive handler
-  function handler(token, context, stringify) {
-    var directive = token.tag.trim()
-    // Repeate a tag's contents five times.
-    if (directive.startsWith('five')) {
-      var output = ''
-      for (var counter = 0; counter < 5; counter++) {
-        output += stringify(token.content, context, handler) }
-      return output }
-    // Insert a string from context.
-    else if (directive.startsWith('=')) {
-      var key = directive.split(' ')[1]
-      return context[key] }
-    else {
-      throw new Error('Invalid directive') } },
-  // Use custom double-parentheses template tags.
-  { open: '((', close: '))', start: '{', end: '}' }),
+  plaintemplate(
+    // Template input
+    '(( five { ))Howdy, (( = name ))! (( } ))',
+    // Context
+    { name: 'John' },
+    // Template directive handler
+    function handler(token, context, stringify) {
+      var directive = token.tag.trim()
+      // Repeate a tag's contents five times.
+      if (directive.startsWith('five')) {
+        var output = ''
+        for (var counter = 0; counter < 5; counter++) {
+          output += stringify(token.content, context, handler) }
+        return output }
+      // Insert a string from context.
+      else if (directive.startsWith('=')) {
+        var key = directive.split(' ')[1]
+        return context[key] }
+      else {
+        throw new Error('Invalid directive') } },
+    // Use custom double-parentheses template tags.
+    { open: '((', close: '))', start: '{', end: '}' }),
   'Howdy, John! Howdy, John! Howdy, John! Howdy, John! Howdy, John! ')
 ```
 

@@ -6,7 +6,7 @@ tape('without tags', function(test) {
     'Just text. No templating.',
     { },
     function(error, result) {
-      test.error(error)
+      test.error(error, 'no error')
       test.equal(result, 'Just text. No templating.')
       test.end() }) })
 
@@ -15,6 +15,7 @@ tape('one insert', function(test) {
     'Hello, <% insert name %>!',
     { name: 'John' },
     function(error, result) {
+      test.error(error, 'no error')
       test.equal(result, 'Hello, John!')
       test.end() }) })
 
@@ -25,7 +26,8 @@ tape('error on insert nonexistent', function(test) {
     function(error) {
       test.assert(
         /No variable "name" at line 1, column 8/
-          .test(error.message))
+          .test(error.message),
+        'yields error')
       test.end() }) })
 
 tape('two inserts', function(test) {
@@ -33,7 +35,7 @@ tape('two inserts', function(test) {
     'Hello, <% insert first %> <%insert last%>.',
     { first: 'John', last: 'Doe' },
     function(error, result) {
-      test.error(error)
+      test.error(error, 'no error')
       test.equal(result, 'Hello, John Doe.')
       test.end() }) })
 
@@ -42,7 +44,8 @@ tape('two inserts across lines', function(test) {
     'Hello, <% insert name%>!\nHow is <% insert state %>?',
     { name: 'John', state: 'Kentucky' },
     function(error, result) {
-      test.error(error)
+      test.error(error, 'no error')
+      test.error(error, 'no error')
       test.equal(result, 'Hello, John!\nHow is Kentucky?')
       test.end() }) })
 
@@ -51,6 +54,7 @@ tape('if then insert', function(test) {
     '<% if onsale { %>Price: $<% insert price %><% } %>',
     { onsale: true, price: '100' },
     function(error, result) {
+      test.error(error, 'no error')
       test.equal(result, 'Price: $100')
       test.end() }) })
 
@@ -61,7 +65,8 @@ tape('if nonexistent error', function(test) {
     function(error) {
       test.assert(
         /No variable "onsale" at line 1, column 1/
-          .test(error.message))
+          .test(error.message),
+        'yields error')
       test.end() }) })
 
 tape('unless then insert', function(test) {
@@ -69,7 +74,7 @@ tape('unless then insert', function(test) {
     '<% unless onsale { %>Price: $<% insert price %><% } %>',
     { onsale: true, price: '100' },
     function(error, result) {
-      test.error(error)
+      test.error(error, 'no error')
       test.equal(result, '')
       test.end() }) })
 
@@ -80,7 +85,8 @@ tape('unless nonexistent error', function(test) {
     function(error) {
       test.assert(
         /No variable "onsale" at line 1, column 1/
-          .test(error.message))
+          .test(error.message),
+        'yields error')
       test.end() }) })
 
 tape('custom parser delimiters', function(test) {
@@ -94,7 +100,7 @@ tape('custom parser delimiters', function(test) {
     '{{ if onsale start }}Price: ${{ insert price }}{{ end }}',
     { onsale: true, price: '100' },
     function(error, result) {
-      test.error(error)
+      test.error(error, 'no error')
       test.equal(result, 'Price: $100')
       test.end() }) })
 
@@ -109,7 +115,7 @@ tape('each', function(test) {
       '<% } %>' ),
     { people: [ 'John', 'Paul', 'George', 'Ringo' ] },
     function(error, result) {
-      test.error(error)
+      test.error(error, 'no error')
       test.equal(result, 'John, Paul, George, and Ringo')
       test.end() }) })
 
@@ -120,7 +126,8 @@ tape('each nonexistent error', function(test) {
     function(error) {
       test.assert(
         /No variable "items" at line 1, column 1/
-          .test(error.message))
+          .test(error.message),
+        'yields error')
       test.end() }) })
 
 tape('each non-Array errors', function(test) {
@@ -130,7 +137,8 @@ tape('each non-Array errors', function(test) {
     function(error) {
       test.assert(
         /Variable "items" is not an Array at line 1, column 1/
-          .test(error.message))
+          .test(error.message),
+        'yields error')
       test.end() }) })
 
 tape('nested if nonexistent error', function(test) {
@@ -140,7 +148,8 @@ tape('nested if nonexistent error', function(test) {
     function(error) {
       test.assert(
         /No variable "second" at line 1, column 19/
-          .test(error.message))
+          .test(error.message),
+        'yields error')
       test.end() }) })
 
 tape('unknown directive', function(test) {
@@ -150,7 +159,7 @@ tape('unknown directive', function(test) {
     function(error) {
       test.assert(
         /Unknown directive "blah" at line 1, column 1/
-          .test(error.message))
+          .test(error.message), 'yields error')
       test.end() }) })
 
 tape('custom tag handler', function(test) {
@@ -161,6 +170,6 @@ tape('custom tag handler', function(test) {
     '<% super %> <% duper %>',
     { happy: 'Happy!' },
     function(error, result) {
-      test.error(error)
+      test.error(error, 'no error')
       test.equal(result, 'Happy! Happy!')
       test.end() }) })

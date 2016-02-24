@@ -1,7 +1,7 @@
 {
   "name": "plaintemplate",
   "description": "simplistic plain text templatng",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "Kyle E. Mitchell <kyle@kemitchell.com> (https://kemitchell.com/)",
   "dependencies": {
     "asap": "^2.0.3",

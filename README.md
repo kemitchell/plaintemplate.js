@@ -35,18 +35,23 @@ processor(
       'Howdy, John! Howdy, John! Howdy, John! Howdy, John! Howdy, John! ') })
 ```
 
-The package exports a single function returning strings, of four arguments:
+The package exports a single function of two arguments:
 
-1. _Input_, a string, containing template text and tags
-2. _Context_, optional, an object, containing values that affect the template
-3. _Tag Hangler_, optional, a function returning strings, of three arguments:
+1. _Tag Hangler_, optional, a function of three arguments:
     1. _Token_, the [plaintemplate-parse][parse] tag token object to stringify
     2. _Context_, the context in which the token is to be stringified
     3. _Stringify_ a function used to recursively stringify other [plaintemplate-parse][parse] tokens, of three arguments:
         1. _Content_, an array of [plaintemplate-parse][parse] text and tag token objects, probably a tag token's content property
         2. _Context_
         3. _Tag Handler_
-4. _Parser Options_, optional, an object, passed directly to [plaintemplate-parse][parse]
+    4. _Callback_, an error-first function
+2. _Parser Options_, optional, an object, passed directly to [plaintemplate-parse][parse]
+
+The function returns another function of three arguments:
+
+1. _Input_, a string, containing template text and tags
+2. _Context_, an object, containing values that affect the template
+3. _Callback_, an error-first function yielding the result of template processing
 
 The default tag handler defines a number of template tag directives:
 

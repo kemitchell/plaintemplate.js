@@ -38,7 +38,8 @@ processor(
 
 The package exports a single function of two arguments:
 
-1. _Tag Hangler_, optional, a function of three arguments:
+1. _Tag Hangler_, optional (omit with `undefined`), a function of three
+   arguments:
 
     1. _Token_, the [plaintemplate-parse][parse] tag token object to
        stringify

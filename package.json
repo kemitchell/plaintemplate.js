@@ -15,12 +15,15 @@
     "replace-require-self": "^1.0.0",
     "tape": "^4.2.2"
   },
+  "files": [
+    "index.js"
+  ],
   "license": "MIT",
   "repository": "kemitchell/plaintemplate.js",
   "scripts": {
-    "precoverage": "istanbul cover test.js",
     "coverage": "istanbul check-coverage --statements 100 --functions 100 --branches 100 --lines 100",
-    "test": "npm run coverage && npm run readme",
-    "readme": "cat README.md | defence -i javascript | replace-require-self | node"
+    "precoverage": "istanbul cover test.js",
+    "readme": "cat README.md | defence -i javascript | replace-require-self | node",
+    "test": "npm run coverage && npm run readme"
   }
 }

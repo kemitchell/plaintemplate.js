@@ -1,112 +1,166 @@
 var tape = require('tape')
 var plaintemplate = require('./')
 
-tape('plaintemplate', function(test) {
-  test.deepEqual(
-    plaintemplate('Just text. No templating.'),
+tape('without tags', function(test) {
+  plaintemplate()(
     'Just text. No templating.',
-    'without tags')
+    { },
+    function(error, result) {
+      test.error(error)
+      test.equal(result, 'Just text. No templating.')
+      test.end() }) })
 
-  test.deepEqual(
-    plaintemplate(
-      'Hello, <% insert name %>!',
-      { name: 'John' }),
-    'Hello, John!',
-    'one insert')
+tape('one insert', function(test) {
+  plaintemplate()(
+    'Hello, <% insert name %>!',
+    { name: 'John' },
+    function(error, result) {
+      test.equal(result, 'Hello, John!')
+      test.end() }) })
 
-  test.throws(
-    function() { plaintemplate('Hello, <% insert name %>!') },
-    /No variable "name" at line 1, column 8/,
-    'error on insert nonexistent')
+tape('error on insert nonexistent', function(test) {
+  plaintemplate()(
+    'Hello, <% insert name %>!',
+    { },
+    function(error) {
+      test.assert(
+        /No variable "name" at line 1, column 8/
+          .test(error.message))
+      test.end() }) })
 
-  test.deepEqual(
-    plaintemplate(
-      'Hello, <% insert first %> <%insert last%>.',
-      { first: 'John', last: 'Doe' }),
-    'Hello, John Doe.',
-    'two inserts')
+tape('two inserts', function(test) {
+  plaintemplate()(
+    'Hello, <% insert first %> <%insert last%>.',
+    { first: 'John', last: 'Doe' },
+    function(error, result) {
+      test.error(error)
+      test.equal(result, 'Hello, John Doe.')
+      test.end() }) })
 
-  test.deepEqual(
-    plaintemplate(
-      'Hello, <% insert name%>!\nHow is <% insert state %>?',
-      { name: 'John', state: 'Kentucky' }),
-    'Hello, John!\nHow is Kentucky?',
-    'two inserts across lines')
+tape('two inserts across lines', function(test) {
+  plaintemplate()(
+    'Hello, <% insert name%>!\nHow is <% insert state %>?',
+    { name: 'John', state: 'Kentucky' },
+    function(error, result) {
+      test.error(error)
+      test.equal(result, 'Hello, John!\nHow is Kentucky?')
+      test.end() }) })
 
-  test.deepEqual(
-    plaintemplate(
-      '<% if onsale { %>Price: $<% insert price %><% } %>',
-      { onsale: true, price: '100' }),
-    'Price: $100',
-    'if then insert')
+tape('if then insert', function(test) {
+  plaintemplate()(
+    '<% if onsale { %>Price: $<% insert price %><% } %>',
+    { onsale: true, price: '100' },
+    function(error, result) {
+      test.equal(result, 'Price: $100')
+      test.end() }) })
 
-  test.throws(
-    function() { plaintemplate('<% if onsale { %>x<% } %>') },
-    /No variable "onsale" at line 1, column 1/,
-    'if nonexistent throws')
+tape('if nonexistent error', function(test) {
+  plaintemplate()(
+    '<% if onsale { %>x<% } %>',
+    { },
+    function(error) {
+      test.assert(
+        /No variable "onsale" at line 1, column 1/
+          .test(error.message))
+      test.end() }) })
 
-  test.deepEqual(
-    plaintemplate(
-      '<% unless onsale { %>Price: $<% insert price %><% } %>',
-      { onsale: true, price: '100' }),
-    '',
-    'unless then insert')
+tape('unless then insert', function(test) {
+  plaintemplate()(
+    '<% unless onsale { %>Price: $<% insert price %><% } %>',
+    { onsale: true, price: '100' },
+    function(error, result) {
+      test.error(error)
+      test.equal(result, '')
+      test.end() }) })
 
-  test.throws(
-    function() { plaintemplate('<% unless onsale { %>x<% } %>') },
-    /No variable "onsale" at line 1, column 1/,
-    'unless nonexistent throws')
+tape('unless nonexistent error', function(test) {
+  plaintemplate()(
+    '<% unless onsale { %>x<% } %>',
+    { },
+    function(error) {
+      test.assert(
+        /No variable "onsale" at line 1, column 1/
+          .test(error.message))
+      test.end() }) })
 
-  test.deepEqual(
-    plaintemplate(
-      '{{ if onsale start }}Price: ${{ insert price }}{{ end }}',
-      { onsale: true, price: '100' },
-      undefined,
-      { open: '{{',
-        close: '}}',
-        start: 'start',
-        end: 'end' }),
-    'Price: $100',
-    'custom parser delimiters')
+tape('custom parser delimiters', function(test) {
+  var processor = plaintemplate(
+    undefined,
+    { open: '{{',
+      close: '}}',
+      start: 'start',
+      end: 'end' })
+  processor(
+    '{{ if onsale start }}Price: ${{ insert price }}{{ end }}',
+    { onsale: true, price: '100' },
+    function(error, result) {
+      test.error(error)
+      test.equal(result, 'Price: $100')
+      test.end() }) })
 
-  test.deepEqual(
-    plaintemplate(
-      ( '<% each people { %>' +
-          '<% unless first { %>' +
-            '<% if last { %>, and <% } %>' +
-            '<% unless last { %>, <% } %>' +
-          '<% } %>' +
-          '<% insert element %>' +
-        '<% } %>' ),
-      { people: [ 'John', 'Paul', 'George', 'Ringo' ] }),
-    'John, Paul, George, and Ringo',
-    'each')
+tape('each', function(test) {
+  plaintemplate()(
+    ( '<% each people { %>' +
+        '<% unless first { %>' +
+          '<% if last { %>, and <% } %>' +
+          '<% unless last { %>, <% } %>' +
+        '<% } %>' +
+        '<% insert element %>' +
+      '<% } %>' ),
+    { people: [ 'John', 'Paul', 'George', 'Ringo' ] },
+    function(error, result) {
+      test.error(error)
+      test.equal(result, 'John, Paul, George, and Ringo')
+      test.end() }) })
 
-  test.throws(
-    function() { plaintemplate('<% each items { %>x<% } %>') },
-    /No variable "items" at line 1, column 1/,
-    'each nonexistent throws')
+tape('each nonexistent error', function(test) {
+  plaintemplate()(
+    '<% each items { %>x<% } %>',
+    { },
+    function(error) {
+      test.assert(
+        /No variable "items" at line 1, column 1/
+          .test(error.message))
+      test.end() }) })
 
-  test.throws(
-    function() {
-      plaintemplate(
-        '<% each items { %>x<% } %>',
-        { items: false } ) },
-    /Variable "items" is not an Array at line 1, column 1/,
-    'each non-Array throws')
+tape('each non-Array errors', function(test) {
+  plaintemplate()(
+    '<% each items { %>x<% } %>',
+    { items: false },
+    function(error) {
+      test.assert(
+        /Variable "items" is not an Array at line 1, column 1/
+          .test(error.message))
+      test.end() }) })
 
-  test.throws(
-    function() { plaintemplate('<% blah %>') },
-    /Unknown directive "blah" at line 1, column 1/,
-    'unknown directive')
+tape('nested if nonexistent error', function(test) {
+  plaintemplate()(
+    '<% each items { %><% if second { %>x<% } %><% } %>',
+    { items: [ true ] },
+    function(error) {
+      test.assert(
+        /No variable "second" at line 1, column 19/
+          .test(error.message))
+      test.end() }) })
 
-  test.deepEqual(
-    plaintemplate(
-      '<% super %> <% duper %>',
-      { happy: 'Happy!' },
-      function(token, context) {
-        return context.happy }),
-    'Happy! Happy!',
-    'custom tag handler')
+tape('unknown directive', function(test) {
+  plaintemplate()(
+    '<% blah %>',
+    { },
+    function(error) {
+      test.assert(
+        /Unknown directive "blah" at line 1, column 1/
+          .test(error.message))
+      test.end() }) })
 
-  test.end() })
+tape('custom tag handler', function(test) {
+  var processor =plaintemplate(
+    function(token, context, stringify, callback) {
+      callback(null, context.happy) })
+  processor(
+    '<% super %> <% duper %>',
+    { happy: 'Happy!' },
+    function(error, result) {
+      test.error(error)
+      test.equal(result, 'Happy! Happy!')
+      test.end() }) })

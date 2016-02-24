@@ -46,7 +46,7 @@ The package exports a single function of two arguments:
 
     2. _Context_, the context in which the token is to be stringified
 
-    3. _Stringify_ a function used to recursively stringify other
+    3. _Stringify_, a function used to recursively stringify other
        [plaintemplate-parse][parse] tokens, of three arguments:
 
         1. _Content_, an array of [plaintemplate-parse][parse] text and

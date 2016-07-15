@@ -13,27 +13,36 @@ var processor = plaintemplate(
     if (directive.startsWith('five')) {
       var output = ''
       for (var counter = 0; counter < 5; counter++) {
-        output += stringify(token.content, context, handler) }
-      return output }
+        output += stringify(token.content, context, handler)
+      }
+      return output
     // Insert a string from context.
-    else if (directive.startsWith('=')) {
+    } else if (directive.startsWith('=')) {
       var key = directive.split(' ')[1]
-      return context[key] }
-    else {
-      throw new Error('Invalid directive') } },
+      return context[key]
+    } else throw new Error('Invalid directive')
+  },
   // Use custom double-parentheses template tags.
-  { open: '((', close: '))', start: '{', end: '}' })
+  {open: '((', close: '))', start: '{', end: '}'}
+)
 
 processor(
   // Template input
   '(( five { ))Howdy, (( = name ))! (( } ))',
   // Context
-  { name: 'John' },
+  {name: 'John'},
   // Callback
-  function(error, result) {
+  function (error, result) {
     assert.deepStrictEqual(
       result,
-      'Howdy, John! Howdy, John! Howdy, John! Howdy, John! Howdy, John! ') })
+      'Howdy, John! ' +
+      'Howdy, John! ' +
+      'Howdy, John! ' +
+      'Howdy, John! ' +
+      'Howdy, John! '
+    )
+  }
+)
 ```
 
 The package exports a single function of two arguments:
